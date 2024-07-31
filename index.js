@@ -1,4 +1,3 @@
-var apn = require("apn");
 
 // var deviceToken = "0b3de039371ba820d34309ed316128458e3944318e9611bd2e6ab16489baf242";
 
@@ -26,6 +25,7 @@ var apn = require("apn");
 //   if (err) return console.log(JSON.stringify(err));
 //   return console.log(JSON.stringify(result));
 // });
+var apn = require("apn");
 
 const express = require('express');
 
