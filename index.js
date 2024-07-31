@@ -30,25 +30,25 @@
 const express = require('express');
 
 const app = express();
-var options = {
-  token: {
-    key: "./keys/k2.p8",
-    keyId: "79SB9M6354",
-    teamId: "RD3BT9HJWM"
-  },
-  production: false
-};
+// var options = {
+//   token: {
+//     key: "./keys/k2.p8",
+//     keyId: "79SB9M6354",
+//     teamId: "RD3BT9HJWM"
+//   },
+//   production: false
+// };
 
-var apnProvider = new apn.Provider(options);
+// var apnProvider = new apn.Provider(options);
 
-var note = new apn.Notification();
+// var note = new apn.Notification();
 
-note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
-note.badge = 3;
-// note.sound = "ping.aiff";
-note.alert = "You have a new call";
-note.payload = {"aps":{"alert": "Hien Nguyen Call"}, "id": "44d915e1-5ff4-4bed-bf13-c423048ec97a", "nameCaller": "Hien Nguyen", "handle": "0123456789", "isVideo": true};
-note.topic = "com.lockersuites.doorCall.voip";
+// note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now.
+// note.badge = 3;
+// // note.sound = "ping.aiff";
+// note.alert = "You have a new call";
+// note.payload = {"aps":{"alert": "Hien Nguyen Call"}, "id": "44d915e1-5ff4-4bed-bf13-c423048ec97a", "nameCaller": "Hien Nguyen", "handle": "0123456789", "isVideo": true};
+// note.topic = "com.lockersuites.doorCall.voip";
 
 
 app.get('/sendVoip', (req, res) => {
