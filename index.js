@@ -55,7 +55,7 @@ app.get('/sendVoip', (req, res) => {
 //   apnProvider.send(note, "0b3de039371ba820d34309ed316128458e3944318e9611bd2e6ab16489baf242").then((err, result) => {
 //     if (err) return console.log(JSON.stringify(err));
 //     return console.log(JSON.stringify(result));
-//     // return res.json(result);
+     return res.json("r");
 
 //  });
 });
