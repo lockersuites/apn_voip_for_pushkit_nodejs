@@ -121,7 +121,7 @@ const app = express();
 
 app.get('/sendVoip', (req, res) => {
 
-  return res.json({ "token" });
+  return res.json("token" );
 });
 
 app.listen(port, () => {
