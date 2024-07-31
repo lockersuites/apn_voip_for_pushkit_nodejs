@@ -4,6 +4,7 @@
 
 var apn = require("apn");
 const express = require('express');
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -35,7 +36,8 @@ app.post('/sendVoip', (req, res) => {
     "nameCaller": "Hien Nguyen",
     "handle": "0123456789",
     "isVideo": true,
-    'meeting_id':req.meeting_id
+    'meeting_id':req.meeting_id,
+    'token':req.token,
   };
   //0b3de039371ba820d34309ed316128458e3944318e9611bd2e6ab16489baf242
   
@@ -45,14 +47,13 @@ app.post('/sendVoip', (req, res) => {
       return res.json({ success: false, errors: response.failed });
     } else {
       console.log("Notification sent successfully:", response.sent);
-      return res.json({ success: true, sent: response.sent });
+      return res.json({ success: true, sent: response.sent,data:payload });
     }
-  }).catch((error) => {
-    console.error("Error sending notification:", error);
-    return res.status(500).json({ success: false, error: error.message });
-  });
+  // }).catch((error) => {
+  //   console.error("Error sending notification:", error);
+  //   return res.status(500).json({ success: false, error: error.message });
+  // });
 });
-
 app.listen(port, () => {
   console.log('Server is running on port 3000');
 });
