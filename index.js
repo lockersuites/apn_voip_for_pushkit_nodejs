@@ -29,18 +29,7 @@ note.payload = {
 note.topic = "com.lockersuites.doorCall.voip";
 
 app.get('/sendVoip', (req, res) => {
-  apnProvider.send(note, "0b3de039371ba820d34309ed316128458e3944318e9611bd2e6ab16489baf242").then((response) => {
-    if (response.failed.length > 0) {
-      console.log("Failed to send notification:", response.failed);
-      return res.json({ success: false, errors: response.failed });
-    } else {
-      console.log("Notification sent successfully:", response.sent);
-      return res.json({ success: true, sent: response.sent });
-    }
-  }).catch((error) => {
-    console.error("Error sending notification:", error);
-    return res.status(500).json({ success: false, error: error.message });
-  });
+  // g
 });
 
 app.listen(3000, () => {
