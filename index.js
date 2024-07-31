@@ -24,17 +24,22 @@ note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now
 note.badge = 3;
 // note.sound = "ping.aiff";
 note.alert = "You have a new call from door";
-note.payload = {
-  "aps": {"alert": "Hien Nguyen Call"},
-  "id": "44d915e1-5ff4-4bed-bf13-c423048ec97a",
-  "nameCaller": "Hien Nguyen",
-  "handle": "0123456789",
-  "isVideo": true
-};
+
 note.topic = "com.lockersuites.doorCall.voip";
 
-app.get('/sendVoip', (req, res) => {
-  apnProvider.send(note, "0b3de039371ba820d34309ed316128458e3944318e9611bd2e6ab16489baf242").then((response) => {
+app.post('/sendVoip', (req, res) => {
+
+  note.payload = {
+    "aps": {"alert": "Hien Nguyen Call"},
+    "id": "44d915e1-5ff4-4bed-bf13-c423048ec97a",
+    "nameCaller": "Hien Nguyen",
+    "handle": "0123456789",
+    "isVideo": true,
+    'meeting_id':req.meeting_id
+  };
+  //0b3de039371ba820d34309ed316128458e3944318e9611bd2e6ab16489baf242
+  
+  apnProvider.send(note, req.token).then((response) => {
     if (response.failed.length > 0) {
       console.log("Failed to send notification:", response.failed);
       return res.json({ success: false, errors: response.failed });
@@ -48,7 +53,7 @@ app.get('/sendVoip', (req, res) => {
   });
 });
 
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log('Server is running on port 3000');
 });
 
