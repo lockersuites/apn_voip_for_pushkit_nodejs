@@ -17,7 +17,7 @@ var options = {
     keyId: "79SB9M6354",  // Ensure this keyId is correct
     teamId: "RD3BT9HJWM"  // Ensure this teamId is correct
   },
-  production: true  // Set to true if you are using the production environment
+  production: false  // Set to true if you are using the production environment
 };
 
 var apnProvider = new apn.Provider(options);
