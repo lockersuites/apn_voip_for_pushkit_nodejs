@@ -8,6 +8,8 @@ var express = require('express');
 var app = express();
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+const fs = require('fs')
+fs.readFileSync("k.p8");
 
 const port = process.env.PORT || 3001;
 
