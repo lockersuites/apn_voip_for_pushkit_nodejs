@@ -1,7 +1,6 @@
 
 
 
-const port = process.env.PORT || 3001;
 
 var apn = require("apn");
 
@@ -9,16 +8,12 @@ var express = require('express');
 var app = express();
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-const fs = require('fs')
 
-
-  const file =  fs.readFile(process.cwd() + 'k.p8');
-  //...
-
+const port = process.env.PORT || 3001;
 
 var options = {
   token: {
-    key: file,  // Ensure this path is correct
+    key: "k.p8",  // Ensure this path is correct
     keyId: "79SB9M6354",  // Ensure this keyId is correct
     teamId: "RD3BT9HJWM"  // Ensure this teamId is correct
   },
