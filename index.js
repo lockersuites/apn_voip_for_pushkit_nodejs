@@ -31,7 +31,7 @@ note.alert = "You have a new call from door";
 
 note.topic = "com.lockersuites.doorCall.voip";
 
-app.post('/z', (req, res) => {
+app.post('/sendVoip', (req, res) => {
 
   note.payload = {
     "aps": {"alert": "Hien Nguyen Call"},
