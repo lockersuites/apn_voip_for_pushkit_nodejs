@@ -3,10 +3,13 @@
 
 
 var apn = require("apn");
-const express = require('express');
 
-const app = express();
-const port = process.env.PORT || 3000;
+var express = require('express');
+var app = express();
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+
+const port = process.env.PORT || 3001;
 
 var options = {
   token: {
@@ -14,7 +17,7 @@ var options = {
     keyId: "79SB9M6354",  // Ensure this keyId is correct
     teamId: "RD3BT9HJWM"  // Ensure this teamId is correct
   },
-  production: false  // Set to true if you are using the production environment
+  production: true  // Set to true if you are using the production environment
 };
 
 var apnProvider = new apn.Provider(options);
@@ -28,7 +31,7 @@ note.alert = "You have a new call from door";
 
 note.topic = "com.lockersuites.doorCall.voip";
 
-app.post('/sendVoip', (req, res) => {
+app.post('/z', (req, res) => {
 
   note.payload = {
     "aps": {"alert": "Hien Nguyen Call"},
@@ -36,25 +39,28 @@ app.post('/sendVoip', (req, res) => {
     "nameCaller": "Hien Nguyen",
     "handle": "0123456789",
     "isVideo": true,
-    'meeting_id':req.meeting_id,
-    'token':req.token,
+    'meeting_id':req.body.meeting_id,
+    'token':req.body.token,
   };
   //0b3de039371ba820d34309ed316128458e3944318e9611bd2e6ab16489baf242
-  
-  apnProvider.send(note, req.token).then((response) => {
+  // console.log(req.body); // teh posted data
+
+  // return res.json({ success: false,data: req.body });
+
+  apnProvider.send(note, req.body.token).then((response) => {
     if (response.failed.length > 0) {
       console.log("Failed to send notification:", response.failed);
-      return res.json({ success: false, errors: response.failed });
+      return res.json({ success: false, errors: response.failed});
     } else {
       console.log("Notification sent successfully:", response.sent);
-      return res.json({ success: true, sent: response.sent,data:payload });
+      return res.json({ success: true, sent: response.sent,data:note.payload });
     }
-  // }).catch((error) => {
-  //   console.error("Error sending notification:", error);
-  //   return res.status(500).json({ success: false, error: error.message });
-  // });
+  }).catch((error) => {
+    console.error("Error sending notification:", error);
+    return res.status(500).json({ success: false, error: error.message });
+  });
 });
 app.listen(port, () => {
-  console.log('Server is running on port 3000');
+  console.log('Server is running on port ${port}');
 });
 
