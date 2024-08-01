@@ -1,6 +1,7 @@
 
 
 
+const port = process.env.PORT || 3001;
 
 var apn = require("apn");
 
@@ -9,13 +10,15 @@ var app = express();
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 const fs = require('fs')
-fs.readFileSync("k.p8");
 
-const port = process.env.PORT || 3001;
+
+  const file =  fs.readFile(process.cwd() + 'k.p8');
+  //...
+
 
 var options = {
   token: {
-    key: "k.p8",  // Ensure this path is correct
+    key: file,  // Ensure this path is correct
     keyId: "79SB9M6354",  // Ensure this keyId is correct
     teamId: "RD3BT9HJWM"  // Ensure this teamId is correct
   },
