@@ -15,7 +15,7 @@ const port = process.env.PORT || 3001;
 
 var options = {
   token: {
-    key: "k2.p8",  // Ensure this path is correct
+    key: "k.p8",  // Ensure this path is correct
     keyId: "79SB9M6354",  // Ensure this keyId is correct
     teamId: "RD3BT9HJWM"  // Ensure this teamId is correct
   },
