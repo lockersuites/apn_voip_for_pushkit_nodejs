@@ -46,9 +46,9 @@ app.post('/sendVoip', (req, res) => {
   note.payload = {
     "aps": {"alert": "Hien Nguyen Call"},
     "id": "44d915e1-5ff4-4bed-bf13-c423048ec97a",
-    "handle": "",
+    "handle": "Door App Calling ...",
     "isVideo": false,
-    'meeting_id':"z3",
+    'meeting_id':req.body.meeting_id,
     'type':req.body.type,
     'status':req.body.status,
     'token':req.body.token,
