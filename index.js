@@ -30,19 +30,19 @@ var options = {
   production: false  // Set to true if you are using the production environment
 };
 
-var apnProvider = new apn.Provider(options);
 
-var note = new apn.Notification();
-
-note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now
-note.badge = 3;
-// note.sound = "ping.aiff";
-note.alert = "You have a new call from door";
-
-note.topic = "com.lockersuites.doorCall.voip";
 
 app.post('/sendVoip', (req, res) => {
+  var apnProvider = new apn.Provider(options);
 
+  var note = new apn.Notification();
+  
+  note.expiry = Math.floor(Date.now() / 1000) + 1; // Expires 1 hour from now
+  note.badge = 3;
+  // note.sound = "ping.aiff";
+  note.alert = "You have a new call from door";
+  
+  note.topic = "com.lockersuites.doorCall.voip";
   note.payload = {
     "aps": {"alert": "Hien Nguyen Call"},
     "id": "44d915e1-5ff4-4bed-bf13-c423048ec97a",
