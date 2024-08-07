@@ -37,7 +37,7 @@ async function getAllDeviceTokens() {
 }
 
 
-app.post('/getDevices', async (req, res) => {
+app.get('/getDevices', async (req, res) => {
   const tokens = await getAllDeviceTokens();
   return res.json({ success: true, data: tokens });
 
