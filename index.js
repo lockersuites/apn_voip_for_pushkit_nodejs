@@ -74,7 +74,7 @@ console.log(tokens);
       'meeting_id': req.body.meeting_id,
       'type': req.body.type,
       'status': req.body.status,
-      'token': tokens[0],
+      'token': tokens.slice(-1)[0],
       'callerName': req.body.callerName,
     };
     console.log(note.payload);
