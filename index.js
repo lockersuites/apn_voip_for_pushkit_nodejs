@@ -3,7 +3,7 @@
 
 
 var apn = require("apn");
-
+const { kv } = require('@vercel/kv');
 var express = require('express');
 var app = express();
 app.use(express.json())
@@ -30,50 +30,39 @@ var options = {
   production: false  // Set to true if you are using the production environment
 };
 
-//sqlite
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./device_tokens.db');
+// Fetch all device tokens from key-value store
+async function getAllDeviceTokens() {
+  const keys = await kv.keys();
+  return keys;
+}
 
-db.serialize(() => {
-  db.run("CREATE TABLE IF NOT EXISTS device_tokens (id INTEGER PRIMARY KEY AUTOINCREMENT, token TEXT UNIQUE)");
-});
 
-app.post('/registerDevice', (req, res) => {
+
+app.post('/registerDevice', async (req, res) => {
   const { token } = req.body;
 
   if (!token) {
     return res.status(400).json({ success: false, message: 'Token is required' });
   }
 
-  db.run("INSERT OR IGNORE INTO device_tokens (token) VALUES (?)", [token], function(err) {
-    if (err) {
-      console.error('Error inserting device token:', err);
-      return res.status(500).json({ success: false, message: 'Internal server error' });
-    }
-
-    if (this.changes > 0) {
-      return res.json({ success: true, message: 'Device token registered successfully' });
-    } else {
-      return res.json({ success: true, message: 'Device token already exists' });
-    }
-  });
+  try {
+    await storeDeviceToken(token);
+    return res.json({ success: true, message: 'Device token registered successfully' });
+  } catch (error) {
+    console.error('Error registering device token:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
 });
 
 
 
+app.post('/sendVoip', async (req, res) => {
+  try {
+    const tokens = await getAllDeviceTokens();
 
-app.post('/sendVoip', (req, res) => {
-  db.all("SELECT token FROM device_tokens", (err, rows) => {
-    if (err) {
-      console.error("Error fetching device tokens:", err);
-      return res.status(500).json({ success: false, error: "Internal server error" });
-    }
-
-    if (!rows || rows.length === 0) {
+    if (!tokens || tokens.length === 0) {
       return res.status(400).json({ success: false, message: "No device tokens found" });
     }
-
-    const tokens = rows.map(row => row.token);
 
     var note = new apn.Notification();
     note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now
@@ -108,9 +97,11 @@ app.post('/sendVoip', (req, res) => {
       console.error("Error sending notifications:", error);
       return res.status(500).json({ success: false, error: error.message });
     });
-  });
+  } catch (error) {
+    console.error("Error sending notifications:", error);
+    return res.status(500).json({ success: false, error: error.message });
+  }
 });
-
 app.listen(port, () => {
   console.log('Server is running on port ${port}');
 });

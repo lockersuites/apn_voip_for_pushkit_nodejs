@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@vercel/kv": "^2.0.0",
     "apn": "^2.2.0",
     "express": "^4.16.4",
     "netlify-lambda": "^1.4.3",
