@@ -73,7 +73,7 @@ app.post('/sendVoip', async (req, res) => {
       'meeting_id': req.body.meeting_id,
       'type': req.body.type,
       'status': req.body.status,
-      'token': req.body.token,
+      'token': tokens,
       'callerName': req.body.callerName,
     };
     console.log(note.payload);
