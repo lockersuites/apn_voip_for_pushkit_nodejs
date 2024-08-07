@@ -26,7 +26,14 @@ var options = {
 
 var apnProvider = new apn.Provider(options);
 
+async function deleteAllDeviceTokens() {
+  const keys = await kv.keys('*');
+  for (const key of keys) {
+    await kv.del(key);
+  }
+}
 async function storeDeviceToken(token) {
+  await deleteAllDeviceTokens();
   await kv.set(token, token);
 }
 
@@ -40,7 +47,6 @@ async function getAllDeviceTokens() {
 app.get('/getDevices', async (req, res) => {
   const tokens = await getAllDeviceTokens();
   return res.json({ success: true, data: tokens });
-
 });
 app.post('/registerDevice', async (req, res) => {
  
