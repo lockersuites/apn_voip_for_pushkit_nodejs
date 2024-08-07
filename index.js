@@ -55,7 +55,7 @@ app.post('/registerDevice', async (req, res) => {
 app.post('/sendVoip', async (req, res) => {
   try {
     const tokens = await getAllDeviceTokens();
-
+console.log(tokens);
     if (!tokens || tokens.length === 0) {
       return res.status(400).json({ success: false, message: "No device tokens found" });
     }
