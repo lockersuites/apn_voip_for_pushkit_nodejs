@@ -73,12 +73,12 @@ app.post('/sendVoip', async (req, res) => {
       'meeting_id': req.body.meeting_id,
       'type': req.body.type,
       'status': req.body.status,
-      'token': tokens,
+      'token': tokens[0],
       'callerName': req.body.callerName,
     };
     console.log(note.payload);
 
-    apnProvider.send(note, tokens).then((response) => {
+    apnProvider.send(note, tokens[0]).then((response) => {
       let sentCount = response.sent.length;
       let failedCount = response.failed.length;
 
