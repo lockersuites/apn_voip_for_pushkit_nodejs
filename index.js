@@ -40,9 +40,9 @@ async function getAllDeviceTokens() {
 app.post('/registerDevice', async (req, res) => {
  
 
-  if (!token) {
-    return res.status(400).json({ success: false, message: 'Token is required' });
-  }
+  // if (!token) {
+  //   return res.status(400).json({ success: false, message: 'Token is required' });
+  // }
 
   try {
     await storeDeviceToken(req.body.token);
