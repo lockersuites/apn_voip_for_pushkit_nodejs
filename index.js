@@ -45,7 +45,7 @@ app.post('/registerDevice', async (req, res) => {
   }
 
   try {
-    await storeDeviceToken("z3");
+    await storeDeviceToken(token);
     return res.json({ success: true, message: 'Device token registered successfully' });
   } catch (error) {
     console.error('Error registering device token:', error);
