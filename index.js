@@ -30,6 +30,10 @@ var options = {
   production: false  // Set to true if you are using the production environment
 };
 
+async function storeDeviceToken(token) {
+  await kv.set(token, token);
+}
+
 // Fetch all device tokens from key-value store
 async function getAllDeviceTokens() {
   const keys = await kv.keys();
@@ -65,7 +69,7 @@ app.post('/sendVoip', async (req, res) => {
     }
 
     var note = new apn.Notification();
-    note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now
+    note.expiry = Math.floor(Date.now() / 1000) + 1; // Expires 1 hour from now
     note.badge = 3;
     note.alert = "You have a new call from door";
     note.topic = "com.lockersuites.doorCall.voip";
