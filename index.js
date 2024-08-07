@@ -32,9 +32,10 @@ async function storeDeviceToken(token) {
 
 // Fetch all device tokens from key-value store
 async function getAllDeviceTokens() {
-  const keys = await kv.keys();
+  const keys = await kv.keys('*');  // Use '*' to fetch all keys
   return keys;
 }
+
 
 app.post('/registerDevice', async (req, res) => {
   // const { token } = req.body;
