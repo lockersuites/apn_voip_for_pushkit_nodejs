@@ -30,49 +30,87 @@ var options = {
   production: false  // Set to true if you are using the production environment
 };
 
+//sqlite
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('./device_tokens.db');
+
+db.serialize(() => {
+  db.run("CREATE TABLE IF NOT EXISTS device_tokens (id INTEGER PRIMARY KEY AUTOINCREMENT, token TEXT UNIQUE)");
+});
+
+app.post('/registerDevice', (req, res) => {
+  const { token } = req.body;
+
+  if (!token) {
+    return res.status(400).json({ success: false, message: 'Token is required' });
+  }
+
+  db.run("INSERT OR IGNORE INTO device_tokens (token) VALUES (?)", [token], function(err) {
+    if (err) {
+      console.error('Error inserting device token:', err);
+      return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+
+    if (this.changes > 0) {
+      return res.json({ success: true, message: 'Device token registered successfully' });
+    } else {
+      return res.json({ success: true, message: 'Device token already exists' });
+    }
+  });
+});
+
+
 
 
 app.post('/sendVoip', (req, res) => {
-  var apnProvider = new apn.Provider(options);
-
-  var note = new apn.Notification();
-  
-  note.expiry = Math.floor(Date.now() / 1000) + 1; // Expires 1 hour from now
-  note.badge = 3;
-  // note.sound = "ping.aiff";
-  note.alert = "You have a new call from door";
-  
-  note.topic = "com.lockersuites.doorCall.voip";
-  note.payload = {
-    "aps": {"alert": "Hien Nguyen Call"},
-    "id": "44d915e1-5ff4-4bed-bf13-c423048ec97a",
-    "handle": "Door App Calling ...",
-    "isVideo": false,
-    'meeting_id':req.body.meeting_id,
-    'type':req.body.type,
-    'status':req.body.status,
-    'token':req.body.token,
-    'callerName':req.body.callerName,
-  };
-  console.log(note.payload);
-  //0b3de039371ba820d34309ed316128458e3944318e9611bd2e6ab16489baf242
-  // console.log(req.body); // teh posted data
-
-  // return res.json({ success: false,data: req.body });
-
-  apnProvider.send(note, req.body.token).then((response) => {
-    if (response.failed.length > 0) {
-      console.log("Failed to send notification:", response.failed);
-      return res.json({ success: false, errors: response.failed});
-    } else {
-      console.log("Notification sent successfully:", response.sent);
-      return res.json({ success: true, sent: response.sent,data:note.payload });
+  db.all("SELECT token FROM device_tokens", (err, rows) => {
+    if (err) {
+      console.error("Error fetching device tokens:", err);
+      return res.status(500).json({ success: false, error: "Internal server error" });
     }
-  }).catch((error) => {
-    console.error("Error sending notification:", error);
-    return res.status(500).json({ success: false, error: error.message });
+
+    if (!rows || rows.length === 0) {
+      return res.status(400).json({ success: false, message: "No device tokens found" });
+    }
+
+    const tokens = rows.map(row => row.token);
+
+    var note = new apn.Notification();
+    note.expiry = Math.floor(Date.now() / 1000) + 3600; // Expires 1 hour from now
+    note.badge = 3;
+    note.alert = "You have a new call from door";
+    note.topic = "com.lockersuites.doorCall.voip";
+    note.payload = {
+      "aps": { "alert": "Hien Nguyen Call" },
+      "id": "44d915e1-5ff4-4bed-bf13-c423048ec97a",
+      "handle": "Door App Calling ...",
+      "isVideo": false,
+      'meeting_id': req.body.meeting_id,
+      'type': req.body.type,
+      'status': req.body.status,
+      'token': req.body.token,
+      'callerName': req.body.callerName,
+    };
+    console.log(note.payload);
+
+    apnProvider.send(note, tokens).then((response) => {
+      let sentCount = response.sent.length;
+      let failedCount = response.failed.length;
+
+      if (failedCount > 0) {
+        console.log("Failed to send notification:", response.failed);
+      } else {
+        console.log("Notification sent successfully:", response.sent);
+      }
+
+      return res.json({ success: true, sentCount: sentCount, failedCount: failedCount, data: note.payload });
+    }).catch((error) => {
+      console.error("Error sending notifications:", error);
+      return res.status(500).json({ success: false, error: error.message });
+    });
   });
 });
+
 app.listen(port, () => {
   console.log('Server is running on port ${port}');
 });
