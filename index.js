@@ -37,14 +37,14 @@ async function getAllDeviceTokens() {
 }
 
 app.post('/registerDevice', async (req, res) => {
-  const { token } = req.body;
+  // const { token } = req.body;
 
-  if (!token) {
-    return res.status(400).json({ success: false, message: 'Token is required' });
-  }
+  // if (!token) {
+  //   return res.status(400).json({ success: false, message: 'Token is required' });
+  // }
 
   try {
-    await storeDeviceToken(token);
+    await storeDeviceToken("z3");
     return res.json({ success: true, message: 'Device token registered successfully' });
   } catch (error) {
     console.error('Error registering device token:', error);
